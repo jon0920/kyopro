@@ -6,7 +6,9 @@ using ll = long long;
 
 int main(){
     
-    std::print("Hello World""\n");
+    int m, d;
+    cin >> m >> d;
+    
 
     return 0;
 }
