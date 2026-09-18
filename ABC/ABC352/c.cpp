@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define rep(i,n) for(int i = 0; i < n; i++)
+using ll = long long;
+
+int main() {
+    
+    int n;
+    cin >> n;
+    ll ans = 0;
+    ll diff = 0;
+    rep(i,n){
+        ll a, b;
+        cin >> a >> b;
+        ans += a;
+        diff = max(diff, b - a);
+    }
+    ans += diff;
+    cout << ans << endl;
+    
+    return 0;
+}
