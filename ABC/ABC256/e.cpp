@@ -6,7 +6,7 @@ using ll = long long;
 #define rep(i,n) for(int i = 0; i < (n); i++)
 
 int main(){
-
+    
     int n;
     cin >> n;
     vector<ll> x(n), c(n);
@@ -20,15 +20,16 @@ int main(){
             uf.merge(i, x[i]);
             continue;
         }
-        ll mn = c[i], v = i;
-        do{
-            v = x[v];
-            mn = min(mn, c[v]);
-        } while(v != i);
-        ans += mn;
+        ll cost = c[i];
+        int cur = x[i];
+        while(cur != i){
+            cost = min(cost, c[cur]);
+            cur = x[cur];
+        }
+        ans += cost;
     }
 
     cout << ans << endl;
-
+    
     return 0;
 }
