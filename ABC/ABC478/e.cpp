@@ -5,63 +5,66 @@ using namespace std;
 using ll = long long;
 #define rep(i,n) for(int i = 0; i < (n); i++)
 
+struct S{
+    int t, u, v;
+};
+
 int main(){
     
     int n, q;
     cin >> n >> q;
-
+    vector<S> edges(q);
     scc_graph G(n);
-    vector<tuple<int,int,int>> edge(q);
     rep(i,q){
         int t, u, v;
         cin >> t >> u >> v;
         u--, v--;
-        if(t == 0){
-            edge[i] = {u, v, 0};
-        } else {
-            edge[i] = {u, v, 1};
-        }
+        edges[i] = {t, u, v};
         G.add_edge(u, v);
     }
 
-    auto scc = G.scc();
-    int sz = scc.size();
+    auto SCC = G.scc();
+    int sz = SCC.size();
     vector<int> group(n);
     rep(i,sz){
-        for(int v : scc[i]) group[v] = i;
+        for(int x : SCC[i]){
+            group[x] = i;
+        }
     }
-
-    vector<vector<pair<int,int>>> DAG(sz);
+    
+    vector<vector<pair<int,int>>> GG(sz);
     vector<int> deg(sz);
-
-    for(auto [u, v, t] : edge){
+    for(auto [t, u, v] : edges){
         if(group[u] == group[v]){
             if(t == 1){
                 cout << "No" << endl;
                 return 0;
             }
         } else {
-            DAG[group[u]].push_back({group[v], t});
+            GG[group[u]].push_back({group[v], t});
             deg[group[v]]++;
         }
     }
 
     queue<int> que;
-    rep(i,sz) if(deg[i] == 0) que.push(i);
-    vector<int> max_dist(sz, 1);
-    while(!que.empty()){
-        int v = que.front(); que.pop();
-        for(auto [nv, nt] : DAG[v]){
-            max_dist[nv] = max(max_dist[nv], max_dist[v] + nt);
-            deg[nv]--;
-            if(deg[nv] == 0) que.push(nv);
+    vector<int> ans(n, 1);
+    rep(i,sz){
+        if(deg[i] == 0){
+            que.push(i);
         }
     }
-    
-    cout << "Yes" << endl;
-    rep(i,n){
-        cout << max_dist[group[i]] << " ";
+
+    while(!que.empty()){
+        int x = que.front(); que.pop();
+        for(auto [nx, t] : GG[x]){
+            ans[nx] = max(ans[nx], ans[x] + t);
+            deg[nx]--;
+            if(deg[nx] == 0) que.push(nx);
+        }
     }
+
+    cout << "Yes" << endl;
+    rep(i,n) cout << ans[group[i]] << " ";
     cout << endl;
     
     return 0;

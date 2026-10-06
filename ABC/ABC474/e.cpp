@@ -8,25 +8,27 @@ int main(){
     int t;
     cin >> t;
     while(t--){
-        ll n;
+        int n;
         cin >> n;
         vector<ll> a(n), b(n), d(n);
-        ll ans = 0;
+        ll sum = 0;
         rep(i,n){
             cin >> a[i] >> b[i];
-            ans += a[i];
-            d[i] = b[i] - a[i];
+            sum += a[i];
+            d[i] = a[i] - b[i];
         }
-        ll mn = *min_element(a.begin(), a.end());
-        sort(d.begin(), d.end());
 
-        ll cur = ans;
+        ll mn = *min_element(a.begin(), a.end());
+        sort(d.rbegin(), d.rend());
+
+        ll ans = sum;
         for(ll i = 1; i <= n; i++){
-            cur += d[i - 1];
-            ans = min(ans, cur + max(0LL, 2 * i - n) * mn);
+            sum -= d[i - 1];
+            ans = min(ans, sum + max(0LL, (2 * i - n) * mn));
         }
         cout << ans << endl;
     }
+
     
     return 0;
 }
