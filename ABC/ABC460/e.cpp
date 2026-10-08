@@ -4,34 +4,33 @@ using namespace atcoder;
 using namespace std;
 using ll = long long;
 #define rep(i,n) for(int i = 0; i < (n); i++)
+
 using mint = modint998244353;
 
 int main(){
     
     int t;
     cin >> t;
-    rep(ti,t){
+    while(t--){
         ll n, m;
         cin >> n >> m;
-
+        string s = to_string(n);
+        int sz = s.size();
+        ll cur = 1;
         mint ans = 0;
-        ll L = 1;
-        ll mod_m10 = 10 % m;
-        while(L <= n){
-            ll R = n;
-            if(L <= n / 10) R = L * 10 - 1;
+        __int128_t y = 1;
+        for(int d = 1; d <= sz; d++){
+            cur *= 10;
+            cur %= m;
+            y *= 10;
+            ll x = (cur - 1 + m) % m;
 
-            ll y_num = R - L + 1;
-            
-            ll v = (mod_m10 - 1 + m) % m;
-            ll g = gcd(v, m);
-            ll x_num = n / (m / g);
+            ll g = gcd(x, m);
 
-            ans += (mint)x_num * y_num;
+            __int128_t cnt_x = n / (m / g);
+            __int128_t cnt_y = max((__int128_t)0, min((__int128_t)n, y - 1) - (y / 10) + 1);
 
-            if(L > n / 10) break;
-            L *= 10;
-            mod_m10 = (mod_m10 * 10) % m;
+            ans += (mint)cnt_x * cnt_y;
         }
         cout << ans.val() << endl;
     }
