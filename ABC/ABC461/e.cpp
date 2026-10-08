@@ -7,42 +7,39 @@ using ll = long long;
 
 int main(){
     
-    ll n, q;
+    int n, q;
     cin >> n >> q;
-    ll ans = 0;
-    vector<ll> row_update(n), col_update(n);
-    fenwick_tree<ll> fw_black(q + 1), fw_white(q + 1);
-    fw_white.add(0,n);
-    
-    for(ll qi = 1; qi <= q; qi++){
+    fenwick_tree<int> row(q + 1), col(q + 1);
+    vector<int> black_update(n), white_update(n);
+
+    ll res = 0;
+    for(int t = 1; t <= q; t++){
         int type;
         cin >> type;
         if(type == 1){
             int r;
-            cin >> r; r--;
-            int prev = row_update[r];
-
-            ans += fw_white.sum(prev,qi);
-
-            if(prev > 0) fw_black.add(prev, -1);
-            
-            fw_black.add(qi,1);
-            row_update[r] = qi;
+            cin >> r;
+            r--;
+            int pre = black_update[r];
+            if(pre == 0) res += n;
+            else{
+                res += col.sum(pre, t + 1);
+                row.add(pre,-1);
+            }
+            row.add(t,1);
+            black_update[r] = t;
         } else {
             int c;
-            cin >> c; c--;
-            int prev = col_update[c];
-
-            ll dec = fw_black.sum(prev, qi);
-            ans -= dec;
-
-            fw_white.add(prev,-1);
-            fw_white.add(qi,1);
-            col_update[c] = qi;
+            cin >> c;
+            c--;
+            int pre = white_update[c];
+            res -= row.sum(pre,t + 1);
+            if(pre != 0) col.add(pre,-1);
+            col.add(t,1);
+            white_update[c] = t;
         }
-
-        cout << ans << endl;
+        cout << res << endl;
     }
-
+    
     return 0;
 }

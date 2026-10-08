@@ -7,23 +7,29 @@ int main(){
     
     int t;
     cin >> t;
-    rep(ti,t){
+    while(t--){
         ll a, b, x, y;
         cin >> a >> b >> x >> y;
-        x = abs(x), y = abs(y);
-        ll mn = min(x, y), mx = max(x, y);
-        ll d = mx - mn;
-        ll ans = 0;
+        if(x < 0) x *= -1;
+        if(y < 0) y *= -1;
 
-        ans += mn * (min(a, b)) * 2;
+        ll ans = 2LL * min(x, y) * min(a, b);
 
-        ll cost2 = min({a + b, 4 * a, 4 * b});
-        ans += cost2 * (d / 2);
+        ll d = max(x, y) - min(x, y);
 
-        if(d % 2 == 1){
-            if(x > y) ans += min(a, 3 * b);
-            else ans += min(b, 3 * a);
+        ll p = d / 2;
+        ll r = d % 2;
+
+        ll cost1 = 0, cost2 = 0;
+        if(x > y){
+            cost1 = min(a, 3LL * b);
+            cost2 = min({a + b, 4LL * a, 4LL * b});
+        } else if(x < y){
+            cost1 = min(b, 3LL * a);
+            cost2 = min({a + b, 4LL * a, 4LL * b});
         }
+
+        ans += cost2 * p + cost1 * r;
         cout << ans << endl;
     }
     
