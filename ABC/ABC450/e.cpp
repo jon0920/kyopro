@@ -1,93 +1,68 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
+#define rep(i,n) for(int i = 0; i < (n); i++)
 
-const ll INF = (ll)1e18;
-
-// f(i, l, r, c)
-ll dfs(int i, ll l, ll r, int c,
-       const vector<ll>& len,
-       const vector<vector<ll>>& cnt,
-       const vector<vector<int>>& prefX,
-       const vector<vector<int>>& prefY){
-
-    if(l > r) return 0;
-
-    if(i == 1){
-        return prefX[c][r] - prefX[c][l-1];
-    }
-    if(i == 2){
-        return prefY[c][r] - prefY[c][l-1];
-    }
-
-    if(r <= len[i-1]){
-        return dfs(i-1, l, r, c, len, cnt, prefX, prefY);
-    }
-    else if(l > len[i-1]){
-        return dfs(i-2, l-len[i-1], r-len[i-1], c, len, cnt, prefX, prefY);
-    }
-    else{
-        return dfs(i-1, l, len[i-1], c, len, cnt, prefX, prefY)
-             + dfs(i-2, 1, r-len[i-1], c, len, cnt, prefX, prefY);
-    }
-}
+const ll INF = 1e18;
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    
+    string x, y;
+    cin >> x >> y;
 
-    string X, Y;
-    cin >> X >> Y;
+    int len_x = x.size(), len_y = y.size();
+    vector<vector<ll>> presum_x(len_x + 1, vector<ll>(26));
+    vector<vector<ll>> presum_y(len_y + 1, vector<ll>(26));
 
-    int Q;
-    cin >> Q;
-
-    int n1 = X.size(), n2 = Y.size();
-
-    // prefix sum
-    vector<vector<int>> prefX(26, vector<int>(n1+1,0));
-    vector<vector<int>> prefY(26, vector<int>(n2+1,0));
-
-    for(int i=0;i<n1;i++){
-        for(int c=0;c<26;c++) prefX[c][i+1] = prefX[c][i];
-        prefX[X[i]-'a'][i+1]++;
+    rep(i,len_x){
+        rep(c,26){
+            presum_x[i + 1][c] = presum_x[i][c] + (x[i] - 'a' == c);
+        }
     }
-    for(int i=0;i<n2;i++){
-        for(int c=0;c<26;c++) prefY[c][i+1] = prefY[c][i];
-        prefY[Y[i]-'a'][i+1]++;
-    }
-
-    // len
-    vector<ll> len(100);
-    len[1] = n1;
-    len[2] = n2;
-    int LIM = 2;
-    for(int i=3;i<100;i++){
-        len[i] = min(INF, len[i-1] + len[i-2]);
-        if(len[i] >= INF) LIM = i;
-    }
-
-    // cnt
-    vector<vector<ll>> cnt(100, vector<ll>(26,0));
-    for(int c=0;c<26;c++){
-        cnt[1][c] = prefX[c][n1];
-        cnt[2][c] = prefY[c][n2];
-    }
-    for(int i=3;i<100;i++){
-        for(int c=0;c<26;c++){
-            cnt[i][c] = min(INF, cnt[i-1][c] + cnt[i-2][c]);
+    rep(i,len_y){
+        rep(c,26){
+            presum_y[i + 1][c] = presum_y[i][c] + (y[i] - 'a' == c);
         }
     }
 
-    // S[10^18] は S[LIM] でOK
-    int root = LIM;
+    vector<vector<ll>> cnt;
+    cnt.push_back(presum_x.back());
+    cnt.push_back(presum_y.back());
 
-    while(Q--){
-        ll L,R;
-        char ch;
-        cin >> L >> R >> ch;
-        int c = ch - 'a';
+    vector<ll> len = {len_x, len_y};
+    while(len.back() < INF){
+        int sz = len.size();
+        len.push_back(min(INF, len[sz - 1] + len[sz - 2]));
 
-        cout << dfs(root, L, R, c, len, cnt, prefX, prefY) << '\n';
+        vector<ll> nxt(26);
+        rep(c,26){
+            nxt[c] = min(INF, cnt[sz - 1][c] + cnt[sz - 2][c]);
+        }
+        cnt.push_back(nxt);
     }
+
+    int top = len.size() - 1;
+
+    auto dfs = [&](auto dfs, int k, ll cur, int c) -> ll {
+        if(cur == 0) return 0;
+        if(k == 0) return presum_x[cur][c];
+        if(k == 1) return presum_y[cur][c];
+
+        if(cur <= len[k - 1]){
+            return dfs(dfs, k - 1, cur, c);
+        }
+
+        return cnt[k - 1][c] + dfs(dfs, k - 2, cur - len[k - 1], c);
+    };
+
+    int q;
+    cin >> q;
+    while(q--){
+        ll l, r;
+        char c;
+        cin >> l >> r >> c;
+        cout << dfs(dfs, top, r, c - 'a') - dfs(dfs, top, l - 1, c - 'a') << endl;
+    }
+    
+    return 0;
 }
