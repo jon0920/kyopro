@@ -4,6 +4,7 @@ using namespace atcoder;
 using namespace std;
 using ll = long long;
 #define rep(i,n) for(int i = 0; i < (n); i++)
+
 using mint = modint998244353;
 
 const int MAX = 3000005;
@@ -16,30 +17,29 @@ void pre(){
     for(int i = MAX - 2; i >= 0; i--) invfact[i] = invfact[i + 1] * (i + 1);
 }
 
-mint ncr(int n, int r){
+mint nCr(int n, int r){
     if(r < 0 || r > n || n < 0) return 0;
     return fact[n] * invfact[r] * invfact[n - r];
 }
 
 int main(){
     
-    int a, b, c;
-    cin >> a >> b >> c;
-    int mx = max(a, c);
+    pre();
+    ll x1, x2, x3;
+    cin >> x1 >> x2 >> x3;
+    ll n = x1 + x2 + x3;
+
     mint ans = 0;
+    for(ll i = 1; i < x1; i++){
+        ans += nCr(x1 - 1, i) * nCr(x3 - 1, i - 1) * nCr(n - i * 2, x1 + x3);
+    }
 
-    for(int i = 1; i <= mx; i++){
-        int k1 = 2 * i - 1;
-        if(k1 <= b){
-            mint w1 = mint(2) * ncr(a - 1, i - 1) * ncr(c - 1, i - 1);
-            ans += w1 * ncr(a + b + c - k1, b - k1);
-        }
+    for(ll i = 1; i < x3; i++){
+        ans += nCr(x3 - 1, i) * nCr(x1 - 1, i - 1) * nCr(n - i * 2, x1 + x3);
+    }
 
-        int k2 = 2 * i;
-        if(k2 <= b){
-            mint w2 = ncr(a - 1, i) * ncr(c - 1, i - 1) + ncr(a - 1, i - 1) * ncr(c - 1, i);
-            ans += w2 * ncr(a + b + c - k2, b - k2);
-        }
+    for(ll i = 1; i <= min(x1, x3); i++){
+        ans += 2 * nCr(x1 - 1, i - 1) * nCr(x3 - 1, i - 1) * nCr(n - (i * 2 - 1), x1 + x3);
     }
 
     cout << ans.val() << endl;
