@@ -4,44 +4,46 @@ using ll = long long;
 #define rep(i,n) for(int i = 0; i < (n); i++)
 
 int main(){
-
+    
     int m, a, b;
     cin >> m >> a >> b;
-    vector<vector<int>> e(m * m);
-    for(int x = 0; x < m; x++){
-        for(int y = 0; y < m; y++){
-            int z = (a * y + b * x) % m;
-            e[y * m + z].push_back(x * m + y);
-        }
-    }
+    vector<vector<int>> G(m, vector<int>(m, -1));
 
-    vector<bool> seen(m * m);
-    queue<int> que;
-    rep(x,m) rep(y,m){
-        if(x == 0 || y == 0){
-            int v = x * m + y;
-            seen[v] = true;
-            que.push(v);
-        }
-    }
-
-    while(!que.empty()){
-        int v = que.front(); que.pop();
-
-        for(auto nv : e[v]){
-            if(!seen[nv]){
-                seen[nv] = true;
-                que.push(nv);
+    for(int i = 1; i < m; i++){
+        for(int j = 1; j < m; j++){
+            if(G[i][j] == -1){
+                pair<int,int> cur = {i, j};
+                vector<pair<int,int>> cand;
+                while(1){
+                    cand.push_back(cur);
+                    auto [x, y] = cur;
+                    if(G[x][y] == 0){
+                        for(auto [r, c] : cand){
+                            G[r][c] = 0;
+                        }
+                        break;
+                    }
+                    if(G[x][y] != -1) break;
+                    int z = (a * y + b * x) % m;
+                    if(z == 0){
+                        for(auto [r, c] : cand){
+                            G[r][c] = 0;
+                        }
+                        break;
+                    } else {
+                        G[x][y] = z;
+                        cur = {y, z};
+                    }
+                }
             }
         }
     }
 
     int ans = 0;
-    rep(x,m) rep(y,m){
-        if(!seen[x * m + y]) ans++;
+    for(int i = 1; i < m; i++){
+        for(int j = 1; j < m; j++) if(G[i][j] != 0) ans++;
     }
-
     cout << ans << endl;
-
+    
     return 0;
 }
