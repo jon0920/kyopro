@@ -3,13 +3,13 @@ using namespace std;
 using ll = long long;
 #define rep(i,n) for(int i = 0; i < (n); i++)
 
-using P = pair<int,int>;
+const int INF = 1e9;
 
 int main(){
     
     int n, m, k;
     cin >> n >> m >> k;
-    vector<vector<P>> G(n * 2);
+    vector<vector<pair<int,int>>> G(n * 2);
     rep(i,m){
         int u, v, a;
         cin >> u >> v >> a;
@@ -31,10 +31,11 @@ int main(){
         G[s + n].push_back({s, 0});
     }
 
-    vector<int> dist(n * 2, 1e9);
+    vector<int> dist(n * 2, INF);
     dist[0] = 0;
-    priority_queue<P, vector<P>, greater<P>> pq;
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
     pq.push({0, 0});
+
     while(!pq.empty()){
         auto [c, v] = pq.top(); pq.pop();
         if(dist[v] != c) continue;
@@ -45,8 +46,8 @@ int main(){
         }
     }
 
-    if(dist[n - 1] == 1e9 && dist[n * 2 - 1] == 1e9) cout << -1 << endl;
-    else cout << min(dist[n - 1], dist[n * 2 - 1]) << endl;
+    int ans = min(dist[n - 1], dist[n * 2 - 1]);
+    cout << (ans == INF ? -1 : ans) << endl;
     
     return 0;
 }
