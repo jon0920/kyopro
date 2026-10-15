@@ -1,44 +1,46 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define rep(i,n) for(int i = 0; i < n; i++)
 using ll = long long;
+#define rep(i,n) for(int i = 0; i < (n); i++)
 
-int main() {
+const ll INF = 4e18;
+
+//intervalset
+int main(){
     
-    int n, q, L, R;
-    set<pair<int,int>> st;
-    set<pair<int,int>>::iterator itr;
-
+    ll n, q;
     cin >> n >> q;
-    st.insert({n, 1});
-    int ans = n;
-    for(int i = 0; i < q; i++){
-        cin >> L >> R;
-        itr = st.lower_bound({L, -1});
-        vector<pair<int,int>> resv;
-        while(itr != st.end()){
-            int sl = (*itr).second;
-            int sr = (*itr).first;
-            if(R < sl) break;
-            if((sl < L) && (R < sr)){
-                resv.push_back({L - 1, sl});
-                resv.push_back({sr, R + 1});
-            }
-            else if((sl < L) && (L <= sr)){
-                resv.push_back({L - 1, sl});
-            }
-            else if((R < sr) && (sl < R)){
-                resv.push_back({sr, R + 1});
-            }
-            ans -= min(sr, R) - max(sl, L) + 1;
-            itr = st.erase(itr);
+    set<pair<ll,ll>> st;
+    st.insert({-INF, -INF});
+    st.insert({INF, INF});
+
+    ll res = n;
+    while(q--){
+        ll l, r;
+        cin >> l >> r;
+        l--;
+
+        auto it = st.lower_bound({l, -INF});
+        auto pre = prev(it);
+
+        if(pre->second >= l){
+            res += pre->second - pre->first;
+            l = pre->first;
+            r = max(r, pre->second);
+            st.erase(pre);
         }
-        int sz = resv.size();
-        for(int i = 0; i < sz; i++){
-            st.insert(resv[i]);
+
+        while(it->first <= r){
+            res += it->second - it->first;
+            r = max(r, it->second);
+            it = st.erase(it);
         }
-        cout << ans << endl;
+
+        st.insert({l, r});
+        res -= r - l;
+
+        cout << res << "\n";
     }
-    
+
     return 0;
 }
