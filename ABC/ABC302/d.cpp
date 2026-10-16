@@ -1,26 +1,36 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define rep(i,n) for(int i = 0; i < n; i++)
 using ll = long long;
+#define rep(i,n) for(int i = 0; i < (n); i++)
 
-int main() {
+int main(){
     
-    int n, m;
-    ll d;
+    ll n, m, d;
     cin >> n >> m >> d;
     vector<ll> a(n), b(m);
     rep(i,n) cin >> a[i];
-    rep(j,m) cin >> b[j];
+    rep(i,m) cin >> b[i];
+    sort(a.rbegin(), a.rend());
+    sort(b.rbegin(), b.rend());
 
-    sort(a.begin(), a.end());
-    sort(b.begin(), b.end());
-
+    int i = 0, j = 0;
     ll ans = -1;
-    rep(i,n){
-        int it = upper_bound(b.begin(), b.end(), a[i] + d) - b.begin();
-        it--;
-        if(abs(a[i] - b[it]) <= d) ans = max(ans, a[i] + b[it]);
+    while(i < n && j < m){
+        if(a[i] < b[j]){
+            if(b[j] - a[i] <= d){
+                ans = a[i] + b[j];
+                break;
+            }
+            j++;
+        } else {
+            if(a[i] - b[j] <= d){
+                ans = a[i] + b[j];
+                break;
+            }
+            i++;
+        }
     }
+
     cout << ans << endl;
     
     return 0;
