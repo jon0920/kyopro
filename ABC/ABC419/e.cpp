@@ -3,39 +3,43 @@ using namespace std;
 using ll = long long;
 #define rep(i,n) for(int i = 0; i < (n); i++)
 
+const ll INF = 1e18;
+
 int main(){
     
     int n, m, l;
     cin >> n >> m >> l;
-    vector<vector<int>> G_mod(l);
     vector<int> a(n);
+    vector<vector<int>> group(l);
     rep(i,n){
         cin >> a[i];
-        G_mod[i % l].push_back(a[i]);
+        group[i % l].push_back(a[i]);
     }
 
-    vector<vector<int>> op(l, vector<int>(m));
+    vector<vector<ll>> cost(l, vector<ll>(m));
     rep(i,l){
-        rep(j,m){
-            int cnt = 0;
-            for(auto x : G_mod[i]){
-                cnt += (j - x + m) % m;
+        rep(r,m){
+            ll res = 0;
+            for(int x : group[i]){
+                res += (r - x + m) % m;
             }
-            op[i][j] = cnt;
+            cost[i][r] = res;
         }
     }
 
-    vector<vector<int>> dp(l + 1, vector<int>(m, 1e9));
-    dp[0][0] = 0;
+    vector<ll> dp(m, INF);
+    dp[0] = 0;
     rep(i,l){
-        rep(j,m){
-            rep(k,m){
-                dp[i + 1][(j + k) % m] = min(dp[i + 1][(j + k) % m], dp[i][j] + op[i][k]);
+        vector<ll> ndp(m, INF);
+        rep(cur,m){
+            rep(nxt,m){
+                ndp[(cur + nxt) % m] = min(ndp[(cur + nxt) % m], dp[cur] + cost[i][nxt]);
             }
         }
+        dp = move(ndp);
     }
 
-    cout << dp[l][0] << endl;
+    cout << dp[0] << endl;
     
     return 0;
 }
