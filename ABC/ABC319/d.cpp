@@ -8,29 +8,26 @@ int main(){
     int n, m;
     cin >> n >> m;
     vector<ll> l(n);
-    ll sum = 0, mx = 0;
-    rep(i,n){
-        cin >> l[i];
-        mx = max(mx, l[i]);
-        sum += l[i];
-    }
+    rep(i,n) cin >> l[i];
 
     auto solve = [&](ll x){
-        int line = 1;
+        ll row = 1;
         ll cnt = 0;
         rep(i,n){
-            ll need = (cnt == 0 ? l[i] : l[i] + 1);
-            if(cnt + need > x){
-                line++;
+            if(x < l[i]) return false;
+
+            ll nxt = (cnt == 0 ? l[i] : cnt + 1 + l[i]);
+            if(nxt > x){
+                row++;
                 cnt = l[i];
             } else {
-                cnt += need;
+                cnt = nxt;
             }
         }
-        return line <= m;
+        return row <= m;
     };
 
-    ll ng = mx - 1, ok = sum + n;
+    ll ok = 1e18, ng = 0;
     while(ok - ng > 1){
         ll mid = (ok + ng) / 2;
         if(solve(mid)) ok = mid;
