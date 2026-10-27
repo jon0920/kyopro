@@ -1,3 +1,4 @@
+// arg_sort
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
@@ -15,12 +16,12 @@ int main(){
         int n;
         cin >> n;
         vector<point> pts(n);
-        rep(i,n) cin >> pts[i].x >> pts[i].y;
-
+        rep(i,n) cin >> pts[i].x >> pts[i].y;      
+        
         auto cross = [&](const point &a, const point &b){
             return a.x * b.y - a.y * b.x;
         };
-
+        
         auto cmp = [&](const point &a, const point &b){
             int a_half = (a.y < 0 || (a.y == 0 && a.x < 0));
             int b_half = (b.y < 0 || (b.y == 0 && b.x < 0));
@@ -41,16 +42,19 @@ int main(){
         }
 
         int ans = 0;
-        int R = 1;
-        for(int L = 0; L < n * 2; L++){
-            R = max(R, L + 1);
-            while(R < n * 2){
-                if(pts[ord[L]].x * pts[ord[R]].y - pts[ord[L]].y * pts[ord[R]].x > 0) R++;
-                else break;
-            }
-            ans = max(ans, R - L);
-        }
+        int r = 1;
+        for(int l = 0; l < n * 2; l++){
+            r = max(r, l + 1);
+            while(r < n * 2){
+                auto [lx, ly] = pts[ord[l]];
+                auto [rx, ry] = pts[ord[r]];
 
+                if(lx * ry - ly * rx <= 0) break;
+                else r++;
+            }
+            ans = max(ans, r - l);
+        }
+        
         cout << ans << endl;
     }
     
