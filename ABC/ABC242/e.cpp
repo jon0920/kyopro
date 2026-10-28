@@ -15,22 +15,20 @@ int main(){
         int n;
         string s;
         cin >> n >> s;
-
         int mid = (n + 1) / 2;
 
-        mint ans = 0;
+        mint res = 0;
         rep(i,mid){
-            ans = ans * 26 + (s[i] - 'A');
+            res = res * 26 + (s[i] - 'A');
         }
 
-        string x = s;
+        string t = s;
         rep(i,mid){
-            x[n - i - 1] = s[i];
+            t[n - i - 1] = t[i];
         }
+        if(t <= s) res++;
 
-        if(x <= s) ans++;
-
-        cout << ans.val() <<endl;
+        cout << res.val() << endl;
     }
     
     return 0;
