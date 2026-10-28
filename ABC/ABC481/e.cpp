@@ -1,4 +1,4 @@
-// arg_sort
+//arg_sort
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
@@ -16,45 +16,32 @@ int main(){
         int n;
         cin >> n;
         vector<point> pts(n);
-        rep(i,n) cin >> pts[i].x >> pts[i].y;      
-        
+        rep(i,n) cin >> pts[i].x >> pts[i].y;
+
         auto cross = [&](const point &a, const point &b){
             return a.x * b.y - a.y * b.x;
         };
-        
+
         auto cmp = [&](const point &a, const point &b){
             int a_half = (a.y < 0 || (a.y == 0 && a.x < 0));
             int b_half = (b.y < 0 || (b.y == 0 && b.x < 0));
             if(a_half != b_half) return a_half < b_half;
             return cross(a, b) > 0;
         };
-        
-        vector<int> tmp(n);
-        iota(tmp.begin(), tmp.end(), 0);
-        sort(tmp.begin(), tmp.end(), [&](int a, int b){
-            return cmp(pts[a], pts[b]);
-        });
 
-        vector<int> ord(n * 2);
-        rep(i,n){
-            ord[i] = tmp[i];
-            ord[i + n] = tmp[i];
-        }
+        sort(pts.begin(), pts.end(), cmp);
 
         int ans = 0;
-        int r = 1;
+        int r = 0;
         for(int l = 0; l < n * 2; l++){
             r = max(r, l + 1);
             while(r < n * 2){
-                auto [lx, ly] = pts[ord[l]];
-                auto [rx, ry] = pts[ord[r]];
-
-                if(lx * ry - ly * rx <= 0) break;
-                else r++;
+                if(cross(pts[l % n], pts[r % n]) <= 0) break;
+                r++;
             }
             ans = max(ans, r - l);
         }
-        
+
         cout << ans << endl;
     }
     
