@@ -4,6 +4,7 @@ using ll = long long;
 #define rep(i,n) for(int i = 0; i < (n); i++)
 
 int sum2d(int xi, int yi, int xf, int yf, vector<vector<int>> &s){
+    //1-indexed 両端を含む
     int res = 0;
     res += s[xf][yf];
     res -= s[xi - 1][yf];
