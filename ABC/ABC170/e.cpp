@@ -33,6 +33,7 @@ int main(){
         cin >> c >> d;
         c--;
         int x = a[c], y = b[c];
+        b[c] = d;
         cand[y].erase(cand[y].find(x));
         if(cand[y].empty()) seg.set(y, INF);
         else seg.set(y, *cand[y].rbegin());
@@ -40,7 +41,7 @@ int main(){
         cand[d].insert(x);
         seg.set(d, *cand[d].rbegin());
 
-        cout << seg.all_prod() << endl;
+        cout << seg.all_prod() << "\n";
     }
     
     return 0;
