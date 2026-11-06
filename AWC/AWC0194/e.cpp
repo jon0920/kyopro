@@ -24,7 +24,7 @@ int main(){
         G[u].push_back({s, a * 2, v});
         G[v].push_back({s, a * 2, u});
         G[u].push_back({t, b * 2, v});
-        G[v].push_back({t, v * 2, u});
+        G[v].push_back({t, b * 2, u});
     }
 
     vector<vector<ll>> dp(n, vector<ll>(k + 1, INF));
