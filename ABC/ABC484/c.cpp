@@ -11,46 +11,43 @@ int main(){
     rep(i,n) cin >> a[i];
     rep(i,n) cin >> b[i];
 
-    int l = -1;
-    rep(i,n){
-        if(a[i] != b[i]){
-            l = i;
-            break;
-        }
+    deque<int> A, B;
+    for(int x : a) A.push_back(x);
+    for(int x : b) B.push_back(x);
+
+    while(!A.empty() && !B.empty() && A.front() == B.front()){
+        A.pop_front(); B.pop_front();
     }
-    if(l == -1){
+    if(A.empty() && B.empty()){
+        cout << "Yes" << endl;
+        return 0;
+    }
+    while(!A.empty() && !B.empty() && A.back() == B.back()){
+        A.pop_back(); B.pop_back();
+    }
+
+
+    deque<int> LA = A, RA = A;
+    int x = LA.front();
+    LA.pop_front(); LA.push_back(x);
+    int y = RA.back();
+    RA.pop_back(); RA.push_front(y);
+
+    deque<int> BB = B;
+    while(!LA.empty() && !B.empty() && LA.front() == B.front()){
+        LA.pop_front(); B.pop_front();
+    }
+    if(LA.empty() && B.empty()){
         cout << "Yes" << endl;
         return 0;
     }
 
-    int r = -1;
-    for(int i = n - 1; i >= 0; i--){
-        if(a[i] != b[i]){
-            r = i;
-            break;
-        }
+    while(!RA.empty() && !BB.empty() && RA.front() == BB.front()){
+        RA.pop_front(); BB.pop_front();
     }
-
-    int len = 0;
-    while(l + 1 + len < n && a[len + l + 1] == b[len + l]) len++;
-
-    int lo = max(l + 1, r), hi = l + len;
-    for(int i = lo; i <= hi; i++){
-        if(a[l] == b[i]){
-            cout << "Yes" << endl;
-            return 0;
-        }
-    }
-
-    len = 0;
-    while(l + 1 + len < n && a[l + len] == b[l + len + 1]) len++;
-
-    hi = l + len;
-    for(int i = lo; i <= hi; i++){
-        if(a[i] == b[l]){
-            cout << "Yes" << endl;
-            return 0;
-        }
+    if(RA.empty() && BB.empty()){
+        cout << "Yes" << endl;
+        return 0;
     }
 
     cout << "No" << endl;
