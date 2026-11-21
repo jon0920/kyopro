@@ -27,7 +27,7 @@ int main(){
     int last_j = m;
     int cnt = 0;
     for(int j = m - 1; j >= 0; j--){
-        if(!cost[j].empty()){
+        if(!cost[j + 1].empty()){
             int diff = last_j - j;
             for(int k = 1; k <= cnt; k++){
                 ll shift = (ll)k * diff;
