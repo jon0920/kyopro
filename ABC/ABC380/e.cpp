@@ -10,7 +10,7 @@ int main(){
     int n, q;
     cin >> n >> q;
     map<int,pair<int,int>> mp;
-    mp[-INF] = {INF, INF};
+    mp[-INF] = {-INF, -INF};
     mp[INF] = {INF, INF};
     //mp[L] = {R, color}
     rep(i,n) mp[i] = {i, i};
@@ -24,7 +24,8 @@ int main(){
             int x, c;
             cin >> x >> c;
             x--, c--;
-            auto it = mp.lower_bound(x);
+            auto it = mp.upper_bound(x);
+            it--;
             int L = it->first;
             int R = it->second.first;
             int pre_c = it->second.second;
