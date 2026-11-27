@@ -9,14 +9,13 @@ int main(){
     
     int n, q;
     cin >> n >> q;
+    map<int,pair<int,int>> mp;
+    mp[-INF] = {INF, INF};
+    mp[INF] = {INF, INF};
+    //mp[L] = {R, color}
+    rep(i,n) mp[i] = {i, i};
 
     vector<int> cnt(n, 1);
-    map<int,pair<int,int>> mp;
-    mp[-INF] = {-INF, -INF};
-    mp[INF] = {INF, INF};
-    rep(i,n){
-        mp[i] = {i, i};
-    }
 
     while(q--){
         int type;
@@ -25,36 +24,37 @@ int main(){
             int x, c;
             cin >> x >> c;
             x--, c--;
-            auto it = mp.upper_bound(x);
-            it--;
-            int l = it->first;
-            auto [r, pre_c] = it->second;
-            cnt[pre_c] -= r - l + 1;
+            auto it = mp.lower_bound(x);
+            int L = it->first;
+            int R = it->second.first;
+            int pre_c = it->second.second;
 
-            int nl = l, nr = r;
+            cnt[pre_c] -= R - L + 1;
+            cnt[c] += R - L + 1;
+
+            int NL = L, NR = R;
             if(it != mp.begin()){
-                auto pre_it = prev(it);
-                if(pre_it->second.second == c){
-                    nl = pre_it->first;
-                    mp.erase(pre_it);
+                auto pre = prev(it);
+                if(pre->second.second == c){
+                    NL = pre->first;
+                    mp.erase(pre);
                 }
             }
             if(it != mp.end()){
-                auto nxt_it = next(it);
-                if(nxt_it->second.second == c){
-                    nr = nxt_it->second.first;
-                    mp.erase(nxt_it);
+                auto nxt = next(it);
+                if(nxt->second.second == c){
+                    NR = nxt->second.first;
+                    mp.erase(nxt);
                 }
             }
 
             mp.erase(it);
-            mp[nl] = {nr, c};
-
-            cnt[c] += r - l + 1;
+            mp[NL] = {NR, c};
         } else {
             int c;
             cin >> c;
-            cout << cnt[c - 1] << endl;
+            c--;
+            cout << cnt[c] << endl;
         }
     }
     
